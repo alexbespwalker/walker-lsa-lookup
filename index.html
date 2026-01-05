@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSA Lead Lookup | Walker Advertising</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a5f2a 0%, #2d8a3e 100%);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .form-body {
+            padding: 24px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #333;
+            font-size: 14px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #2d8a3e;
+            box-shadow: 0 0 0 3px rgba(45, 138, 62, 0.1);
+        }
+        .form-group input::placeholder {
+            color: #aaa;
+        }
+        .form-group.password-group {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+        .optional-label {
+            color: #888 !important;
+            font-weight: 400 !important;
+        }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1a5f2a 0%, #2d8a3e 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            box-shadow: 0 4px 12px rgba(45, 138, 62, 0.3);
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Loading State */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 24px;
+        }
+        .loading.active {
+            display: block;
+        }
+        .form-body.hidden {
+            display: none;
+        }
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e1e5e9;
+            border-top-color: #2d8a3e;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading p {
+            color: #666;
+            margin: 0;
+        }
+        
+        /* Error State */
+        .error-message {
+            display: none;
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c00;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .error-message.active {
+            display: block;
+        }
+        
+        /* Results container */
+        #results-container {
+            display: none;
+        }
+        #results-container.active {
+            display: block;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 16px;
+            color: #888;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card" id="form-card">
+            <div class="header">
+                <h1>LSA Lead Lookup</h1>
+                <p>Walker Advertising • Enter up to 5 phone numbers</p>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Looking up leads...</p>
+            </div>
+            
+            <div class="form-body" id="form-body">
+                <div class="error-message" id="error-message"></div>
+                
+                <form id="lookup-form">
+                    <div class="form-group password-group">
+                        <label for="access-code">Access Code</label>
+                        <input type="password" id="access-code" name="access_code" required placeholder="Enter access code">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone1">Phone 1 <span style="color: #c00;">*</span></label>
+                        <input type="tel" id="phone1" name="phone1" required placeholder="(555) 123-4567">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone2" class="optional-label">Phone 2 (optional)</label>
+                        <input type="tel" id="phone2" name="phone2" placeholder="(555) 123-4567">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone3" class="optional-label">Phone 3 (optional)</label>
+                        <input type="tel" id="phone3" name="phone3" placeholder="(555) 123-4567">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone4" class="optional-label">Phone 4 (optional)</label>
+                        <input type="tel" id="phone4" name="phone4" placeholder="(555) 123-4567">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone5" class="optional-label">Phone 5 (optional)</label>
+                        <input type="tel" id="phone5" name="phone5" placeholder="(555) 123-4567">
+                    </div>
+                    
+                    <button type="submit" class="btn" id="submit-btn">Look Up Leads</button>
+                </form>
+            </div>
+            
+            <div class="footer">
+                Internal use only
+            </div>
+        </div>
+        
+        <div id="results-container"></div>
+    </div>
+    
+    <script>
+        // ============================================
+        // CONFIGURE THIS: Your n8n webhook URL
+        // ============================================
+        const WEBHOOK_URL = 'https://YOUR-N8N-INSTANCE.app.n8n.cloud/webhook/lsa-lookup';
+        // ============================================
+        
+        const form = document.getElementById('lookup-form');
+        const formBody = document.getElementById('form-body');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('error-message');
+        const formCard = document.getElementById('form-card');
+        const resultsContainer = document.getElementById('results-container');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Hide error, show loading
+            errorMessage.classList.remove('active');
+            formBody.classList.add('hidden');
+            loading.classList.add('active');
+            
+            // Build payload
+            const payload = {
+                access_code: document.getElementById('access-code').value,
+                phone1: document.getElementById('phone1').value,
+                phone2: document.getElementById('phone2').value,
+                phone3: document.getElementById('phone3').value,
+                phone4: document.getElementById('phone4').value,
+                phone5: document.getElementById('phone5').value
+            };
+            
+            try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
+                
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeout);
+                
+                const html = await response.text();
+                
+                // Hide form card, show results
+                formCard.style.display = 'none';
+                resultsContainer.innerHTML = html;
+                resultsContainer.classList.add('active');
+                
+            } catch (err) {
+                // Show error
+                loading.classList.remove('active');
+                formBody.classList.remove('hidden');
+                
+                if (err.name === 'AbortError') {
+                    errorMessage.textContent = 'Request timed out. Please try again.';
+                } else {
+                    errorMessage.textContent = 'Connection error. Please check your network and try again.';
+                }
+                errorMessage.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
