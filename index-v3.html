@@ -205,10 +205,10 @@
         <div class="card" id="form-card">
             <div class="header">
                 <h1>LSA Lead Lookup</h1>
-                <p>Walker Advertising • Enter up to 5 phone numbers</p>
+                <p>Walker Advertising â€¢ Enter up to 5 phone numbers</p>
                 
                 <div class="features">
-                    <div class="features-title">✨ Features</div>
+                    <div class="features-title">âœ¨ Features</div>
                     <ul>
                         <li>Media Source tracking displayed</li>
                         <li>Live call detection & warning</li>
@@ -262,11 +262,11 @@
             </div>
             
             <div class="version-indicator">
-                Endpoint: /webhook/lsa-lookup-final
+                Endpoint: /webhook/lsa-lookup-final | v4 (Copy fix)
             </div>
             
             <div class="footer">
-                Internal use only • Walker Advertising
+                Internal use only â€¢ Walker Advertising
             </div>
         </div>
         
@@ -278,6 +278,53 @@
         // CONFIGURE THIS: Your n8n vFinal webhook URL
         // ============================================
         const WEBHOOK_URL = 'https://automation.walkeradvertising.com:5678/webhook/lsa-lookup-final';
+        // ============================================
+        
+        // ============================================
+        // Copy function - defined here because scripts
+        // in dynamically inserted HTML don't execute
+        // ============================================
+        function copyText(idx) {
+            var textarea = document.getElementById('txt' + idx);
+            var btn = textarea.parentNode.querySelector('.copy-all-btn');
+            
+            // Use modern Clipboard API with fallback
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textarea.value).then(function() {
+                    btn.classList.add('copied');
+                    btn.innerText = 'Copied!';
+                    setTimeout(function() {
+                        btn.classList.remove('copied');
+                        btn.innerText = 'Copy All';
+                    }, 2000);
+                }).catch(function() {
+                    // Fallback for clipboard API failure
+                    fallbackCopy(textarea, btn);
+                });
+            } else {
+                // Fallback for older browsers
+                fallbackCopy(textarea, btn);
+            }
+        }
+        
+        function fallbackCopy(textarea, btn) {
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            try {
+                document.execCommand('copy');
+                btn.classList.add('copied');
+                btn.innerText = 'Copied!';
+                setTimeout(function() {
+                    btn.classList.remove('copied');
+                    btn.innerText = 'Copy All';
+                }, 2000);
+            } catch (err) {
+                btn.innerText = 'Copy failed';
+                setTimeout(function() {
+                    btn.innerText = 'Copy All';
+                }, 2000);
+            }
+        }
         // ============================================
         
         const form = document.getElementById('lookup-form');
