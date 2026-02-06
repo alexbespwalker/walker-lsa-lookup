@@ -17,7 +17,7 @@ index-v5.html  →  POST to n8n webhook  →  MS SQL (Waycool/WacatsNew)  →  R
 
 | File | Purpose |
 |------|---------|
-| `index-v5.html` | Current frontend form (Excel-driven rules, points to `/webhook/lsa-lookup-final`) |
+| `index-v5.html` | Current frontend form (Excel-driven rules, points to `/webhook/lsa-lookup-v5-test`) |
 | `scripts/generate_rules.py` | Excel → JSON/JS converter |
 | `scripts/requirements.txt` | Python dependencies (openpyxl) |
 | `rules/rules.json` | Generated lookup table (720 entries) |
@@ -218,8 +218,8 @@ MS SQL connections through n8n go cold after ~30s of idle. This is a platform-le
 ## Current Status
 
 Both v4 (vFinal) and v5 are **ACTIVE** simultaneously:
-- **vFinal** serves production on `/webhook/lsa-lookup-final` (the path `index-v5.html` points to)
-- **v5** serves test on `/webhook/lsa-lookup-v5-test` for parallel QA validation
+- **vFinal** serves production on `/webhook/lsa-lookup-final` (the path `index-v4.html` points to)
+- **v5** serves test on `/webhook/lsa-lookup-v5-test` (the path `index-v5.html` points to)
 - Once v5 QA is complete, v5 can be switched to the production path and vFinal deactivated
 
 **Note**: `index-v4.html` is kept on GitHub because users have pre-saved links to it. Do not delete without redirecting users to `index-v5.html` first.
