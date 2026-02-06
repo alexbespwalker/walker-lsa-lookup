@@ -221,3 +221,5 @@ Both v4 (vFinal) and v5 are **ACTIVE** simultaneously:
 - **vFinal** serves production on `/webhook/lsa-lookup-final` (the path `index-v5.html` points to)
 - **v5** serves test on `/webhook/lsa-lookup-v5-test` for parallel QA validation
 - Once v5 QA is complete, v5 can be switched to the production path and vFinal deactivated
+
+**Note**: `index-v4.html` is kept on GitHub because users have pre-saved links to it. Do not delete without redirecting users to `index-v5.html` first.
