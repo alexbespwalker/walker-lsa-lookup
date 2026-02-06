@@ -17,7 +17,8 @@ index-v5.html  →  POST to n8n webhook  →  MS SQL (Waycool/WacatsNew)  →  R
 
 | File | Purpose |
 |------|---------|
-| `index-v5.html` | Current frontend form (Excel-driven rules, points to `/webhook/lsa-lookup-v5-test`) |
+| `index-v4.html` | Production frontend (legacy broadId rules, points to `/webhook/lsa-lookup-final`) |
+| `index-v5.html` | QA frontend (Excel-driven rules, points to `/webhook/lsa-lookup-v5-test`) |
 | `scripts/generate_rules.py` | Excel → JSON/JS converter |
 | `scripts/requirements.txt` | Python dependencies (openpyxl) |
 | `rules/rules.json` | Generated lookup table (720 entries) |
@@ -25,6 +26,7 @@ index-v5.html  →  POST to n8n webhook  →  MS SQL (Waycool/WacatsNew)  →  R
 | `Copy of LSA_Updated_Signal.xlsx` | Excel source of truth (710 rules) |
 | `workflows/lsa-lead-lookup-v5.json` (local) / `workflows/lsa-lookup-v5.json` (GitHub) | n8n v5 workflow export |
 | `workflows/lsa-lookup-vfinal-backup.json` | n8n v4/vFinal workflow export |
+| `archive/` | Historical frontend versions (v1, v2, v3) |
 
 ## Commands
 
